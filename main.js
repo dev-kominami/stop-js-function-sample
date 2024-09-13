@@ -14,28 +14,28 @@ function createWorker() {
 
 // Workerを停止する関数
 function stopWorker() {
-  if (worker) {
-    worker.terminate(); // Workerを終了
-    worker = undefined; // worker変数をリセット
-    // Worker停止メッセージを表示
-    document.getElementById("result").innerHTML += "Worker が停止しました<br>";
-  }
+  if (!worker) return; // workerが存在しない場合は何もしない
+
+  worker.terminate(); // Workerを終了
+  worker = undefined; // worker変数をリセット
+  // Worker停止メッセージを表示
+  document.getElementById("result").innerHTML += "Worker が停止しました<br>";
 }
 
 // 開始ボタンのクリックイベントハンドラ
 document.getElementById('startWorker').addEventListener('click', () => {
-  if (typeof(Worker) !== "undefined") {
-    // Workerがサポートされている場合
-    if (worker) {
-      // 既存のWorkerがある場合は停止
-      stopWorker();
-    }
-    // 新しいWorkerを作成
-    createWorker();
-  } else {
-    // Workerがサポートされていない場合
+  // Workerがサポートされていない場合は早期リターン
+  if (typeof(Worker) === "undefined") {
     console.log("Web Workerはサポートされていません");
+    return;
   }
+
+  // 既存のWorkerがある場合は停止
+  if (worker) {
+    stopWorker();
+  }
+  // 新しいWorkerを作成
+  createWorker();
 });
 
 // 停止ボタンのクリックイベントハンドラ
